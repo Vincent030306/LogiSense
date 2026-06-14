@@ -41,7 +41,8 @@ export class CSAgent {
       return response.choices[0].message.content;
     } catch (err) {
       console.error('CS Agent Error:', err);
-      return 'Maaf, sistem kami sedang mengalami gangguan. Saya akan hubungkan dengan tim kami.';
+      // Return the actual error message to WA for easy debugging
+      return `Maaf, sistem AI sedang mengalami gangguan API.\n\nDetail Error: ${err.message || err}\n\n(Catatan untuk Owner: Pastikan OPENROUTER_API_KEY valid dan memiliki kredit, atau ganti ID Model MiniMax di cs-agent.js)`;
     }
   }
 
