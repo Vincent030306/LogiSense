@@ -118,8 +118,22 @@ app.get('/api/approvals/pending', async (req, res) => {
   }
 });
 
+app.get('/api/ai/lessons', async (req, res) => {
+  res.json([
+    { category: 'Rerouting', rule: 'Delay > 30 menit di rute X, hindari jam sibuk.', confidence: 0.85 },
+    { category: 'Margin', rule: 'Pelanggan retail menghasilkan margin 12% lebih tinggi.', confidence: 0.92 }
+  ]);
+});
+
+app.get('/api/chat/messages', async (req, res) => {
+  res.json([
+    { id: 1, sender: '08123456789', message: 'Halo, saya mau order.', timestamp: new Date() },
+    { id: 2, sender: 'system', message: 'Baik, akan kami hubungkan ke Owner.', timestamp: new Date() }
+  ]);
+});
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, async () => {
+const server = app.listen(PORT, async () => {
   console.log(`🚀 Owner Dashboard Server running on http://localhost:${PORT}`);
   
   // Start bots
@@ -128,4 +142,18 @@ app.listen(PORT, async () => {
   } catch (err) {
     console.log('⚠️ Failed to start WhatsApp:', err.message);
   }
+});
+
+// Setup WebSocket for Live Feed
+import { WebSocketServer } from 'ws';
+const wss = new WebSocketServer({ server, path: '/ws/live' });
+
+wss.on('connection', (ws) => {
+  console.log('🔌 WebSocket client connected');
+  // Send a dummy event to confirm connection
+  ws.send(JSON.stringify({
+    type: 'ops_update',
+    data: { message: 'System connected and monitoring live operations.' },
+    timestamp: new Date()
+  }));
 });
