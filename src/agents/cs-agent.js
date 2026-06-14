@@ -30,7 +30,7 @@ export class CSAgent {
   async handleCustomerMessage(customerName, customerId, message, contextData = {}) {
     try {
       const response = await openai.chat.completions.create({
-        model: 'minimax/minimax-01',
+        model: 'minimax/minimax-m2.7',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'system', content: `Context Data Database saat ini: ${JSON.stringify(contextData)}` },
@@ -49,7 +49,7 @@ export class CSAgent {
   async generateDailySummary(events) {
     try {
       const response = await openai.chat.completions.create({
-        model: 'minimax/minimax-01',
+        model: 'minimax/minimax-m2.7',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: `Buatkan rangkuman operasional harian untuk admin berdasarkan data event hari ini: ${JSON.stringify(events)}` }
