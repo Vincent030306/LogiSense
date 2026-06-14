@@ -44,6 +44,9 @@ export async function connectToWhatsApp() {
 
     // Is it a group?
     const isGroup = jid.endsWith('@g.us');
+    
+    // Selalu log pesan masuk agar Owner bisa melihat Group ID di VPS
+    console.log(`[WA] Message from ${jid}: ${text}`);
 
     if (!isGroup) {
       // 1. Customer facing message
