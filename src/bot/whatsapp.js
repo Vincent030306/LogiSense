@@ -103,8 +103,8 @@ export async function connectToWhatsApp() {
           csAgent.muteCustomer(jid);
 
         } catch (dbErr) {
-          console.error("Failed to save draft order:", dbErr);
-          await sock.sendMessage(jid, { text: "Maaf, terjadi kesalahan saat menyimpan draft order Anda. Mohon hubungi admin manual." });
+          console.error("Failed to save draft order or send message:", dbErr);
+          await sock.sendMessage(jid, { text: `Maaf, terjadi kesalahan teknis (System Error: ${dbErr.message || dbErr}). Mohon hubungi admin manual.` });
         }
       } else {
         // Normal conversation reply
