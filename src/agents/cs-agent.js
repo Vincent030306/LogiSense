@@ -14,23 +14,45 @@ const openai = new OpenAI({
 const SYSTEM_PROMPT = `
 Kamu adalah asisten CS dan operasional Yes Logistics. 
 Tugasmu:
-1. Balas pertanyaan customer tentang status pengiriman, order, dan estimasi tiba 
-   berdasarkan data database yang diberikan.
-2. Proses order baru dan catat ke sistem.
-3. Generate rangkuman operasional harian yang ringkas dan jelas untuk admin.
-4. Kalau tidak tahu jawaban atau di luar kapasitasmu, 
-   katakan "Saya akan hubungkan dengan tim kami" — jangan mengarang.
+1. Melayani customer yang ingin mengirim barang.
+2. JANGAN membuatkan resi atau menjanjikan harga. Harga akan diurus oleh Tim Sales/Owner.
+3. Kumpulkan informasi ini dari customer secara bertahap (jangan ditanya sekaligus):
+   - Nama Pengirim & Alamat (Tanya ini dulu)
+   - Nama Penerima & Alamat & No HP (Tanya ini setelahnya)
+   - Detail Barang & Berat (Terakhir)
+
+PENTING: Jika SEMUA informasi di atas sudah lengkap dan customer setuju untuk di-follow up, maka pada bagian AKHIR balasanmu, WAJIB tuliskan teks berikut persis seperti ini:
+
+[ORDER_READY]
+Pengirim: [Nama & Alamat Pengirim]
+Penerima: [Nama, Alamat, No HP Penerima]
+Barang: [Detail Barang & Berat]
+Layanan: Reguler
 
 Gunakan bahasa Indonesia yang ramah, singkat, dan profesional.
-Jangan pernah memberikan informasi yang tidak ada di database.
 `;
 
 // In-memory chat history per customer (max 10 messages)
 const chatMemory = new Map();
+const mutedCustomers = new Set();
 
 export class CSAgent {
   
+  muteCustomer(customerId) {
+    mutedCustomers.add(customerId);
+  }
+
+  isMuted(customerId) {
+    return mutedCustomers.has(customerId);
+  }
+
+  unmuteCustomer(customerId) {
+    mutedCustomers.delete(customerId);
+  }
+
   async handleCustomerMessage(customerName, customerId, message, contextData = {}) {
+    if (this.isMuted(customerId)) return null;
+
     try {
       // Retrieve or initialize memory
       let history = chatMemory.get(customerId) || [];
