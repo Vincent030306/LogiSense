@@ -89,11 +89,12 @@ async function loadFleet() {
     tbody.innerHTML = '';
     fleet.forEach(v => {
         const tr = document.createElement('tr');
+        const driverName = v.drivers && v.drivers.length > 0 ? v.drivers[0].name : '-';
         tr.innerHTML = `
             <td>${v.id}</td>
             <td><b>${v.plate_number}</b></td>
             <td>${v.type}</td>
-            <td>${v.driver_name || '-'}</td>
+            <td>${driverName}</td>
             <td>${v.capacity_kg} kg</td>
             <td><span class="status-badge idle">Available</span></td>
         `;

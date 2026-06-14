@@ -76,16 +76,24 @@ app.get('/api/dashboard/revenue-by-category', (req, res) => {
 });
 
 app.get('/api/orders', async (req, res) => {
-  const shipments = await prisma.shipment.findMany({ take: 20, orderBy: { created_at: 'desc' } });
-  // Map Prisma Shipment to Order structure expected by UI
-  res.json(shipments.map(s => ({
-    id: s.id,
-    date: s.created_at,
-    customer_name: s.customer_id,
-    revenue_excl_ppn: s.distance_km * 10000,
-    direct_costs: s.fuel_cost + s.toll_parking,
-    gross_margin: s.margin_pct
-  })));
+  try {
+    const shipments = await prisma.shipment.findMany({ 
+      take: 20, 
+      orderBy: { created_at: 'desc' },
+      include: { customer: true }
+    });
+    // Map Prisma Shipment to Order structure expected by UI
+    res.json(shipments.map(s => ({
+      id: s.id,
+      date: s.created_at,
+      customer_name: s.customer ? s.customer.name : s.customer_id,
+      revenue_excl_ppn: s.distance_km * 10000,
+      direct_costs: s.fuel_cost + s.toll_parking,
+      gross_margin: s.margin_pct
+    })));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // DeepSeek Owner Agent Chat Endpoint
