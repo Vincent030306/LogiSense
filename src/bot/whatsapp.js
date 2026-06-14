@@ -8,7 +8,8 @@ export async function connectToWhatsApp() {
   
   const sock = makeWASocket({
     auth: state,
-    logger: pino({ level: 'silent' })
+    logger: pino({ level: 'silent' }),
+    browser: ['LogiSense', 'Chrome', '1.0.0']
   });
 
   sock.ev.on('creds.update', saveCreds);
