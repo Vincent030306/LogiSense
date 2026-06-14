@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiSense — PT. Yes Logistics Indonesia</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Dashboard LogiSense untuk operasional PT. Yes Logistics Indonesia.">
+    
+    <!-- Fonts: Inter & Outfit for premium look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="dark-theme">
+    
+    <!-- Background Elements -->
+    <div class="bg-glow top-left"></div>
+    <div class="bg-glow bottom-right"></div>
+    <div class="bg-grid"></div>
+
+    <div class="app-container">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar glass-panel">
+            <div class="brand">
+                <div class="brand-logo">
+                    <i class="ph-fill ph-truck"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>LogiSense</h1>
+                    <p>PT. YES LOGISTICS</p>
+                </div>
+            </div>
+
+            <nav class="main-nav">
+                <a href="#" class="nav-item active" data-target="dashboard">
+                    <i class="ph ph-squares-four"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-target="dispatch">
+                    <i class="ph ph-map-pin-line"></i>
+                    <span>Dispatch & Rute</span>
+                </a>
+                <a href="#" class="nav-item" data-target="fleet">
+                    <i class="ph ph-truck"></i>
+                    <span>Armada</span>
+                </a>
+                <a href="#" class="nav-item" data-target="finance">
+                    <i class="ph ph-chart-line-up"></i>
+                    <span>Keuangan</span>
+                </a>
+                <a href="#" class="nav-item" data-target="ai-insights">
+                    <i class="ph ph-brain"></i>
+                    <span>AI Insights</span>
+                    <span class="badge">Live</span>
+                </a>
+                <a href="#" class="nav-item" data-target="wa-cs">
+                    <i class="ph ph-whatsapp-logo"></i>
+                    <span>CS Chat</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">OM</div>
+                    <div class="user-info">
+                        <h4>Owner Manager</h4>
+                        <p>Super Admin</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="page-title">
+                    <h2 id="current-page-title">Dashboard Overview</h2>
+                    <p id="current-date">Kamis, 14 Juni 2026</p>
+                </div>
+
+                <div class="topbar-actions">
+                    <div class="status-indicator">
+                        <span class="pulse-dot"></span>
+                        <span id="ws-status">System Online</span>
+                    </div>
+                    <button class="icon-btn"><i class="ph ph-bell"></i></button>
+                    <button class="icon-btn theme-toggle"><i class="ph ph-sun"></i></button>
+                </div>
+            </header>
+
+            <!-- Scrollable Content Area -->
+            <div class="content-scroll-area">
+                
+                <!-- VIEW: Dashboard -->
+                <section id="view-dashboard" class="view-section active">
+                    
+                    <!-- KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card glass-panel">
+                            <div class="kpi-header">
+                                <h3>Total Pendapatan (YTD)</h3>
+                                <div class="kpi-icon green"><i class="ph ph-money"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-revenue">Rp 0</div>
+                            <div class="kpi-trend positive"><i class="ph ph-trend-up"></i> +12% vs last year</div>
+                        </div>
+
+                        <div class="kpi-card glass-panel">
+                            <div class="kpi-header">
+                                <h3>Active Trips</h3>
+                                <div class="kpi-icon blue"><i class="ph ph-truck-moving"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-active-trips">0</div>
+                            <div class="kpi-trend"><span id="kpi-fleet-util">0%</span> Fleet Utilization</div>
+                        </div>
+
+                        <div class="kpi-card glass-panel">
+                            <div class="kpi-header">
+                                <h3>AI Cost Savings</h3>
+                                <div class="kpi-icon purple"><i class="ph ph-brain"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-ai-savings">Rp 0</div>
+                            <div class="kpi-trend positive">From Toll/Non-Toll Optimizations</div>
+                        </div>
+
+                        <div class="kpi-card glass-panel">
+                            <div class="kpi-header">
+                                <h3>Avg Gross Margin</h3>
+                                <div class="kpi-icon orange"><i class="ph ph-percent"></i></div>
+                            </div>
+                            <div class="kpi-value" id="kpi-margin">0%</div>
+                            <div class="kpi-trend positive">Target: >8%</div>
+                        </div>
+                    </div>
+
+                    <!-- Main Charts Area -->
+                    <div class="dashboard-grid">
+                        
+                        <div class="chart-container glass-panel span-2">
+                            <div class="section-header">
+                                <h3>Financial Performance (Monthly)</h3>
+                                <button class="btn-secondary btn-sm">Report <i class="ph ph-download-simple"></i></button>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="financeChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-container glass-panel">
+                            <div class="section-header">
+                                <h3>Revenue by Segment</h3>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="segmentChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Live Live Activity Feed -->
+                        <div class="live-feed glass-panel span-3">
+                            <div class="section-header">
+                                <h3><span class="pulse-dot"></span> Live Operations Feed</h3>
+                            </div>
+                            <div class="feed-list" id="live-feed-container">
+                                <!-- Feed items injected via JS -->
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- VIEW: Dispatch -->
+                <section id="view-dispatch" class="view-section" style="height: 100%; display: flex; flex-direction: column;">
+                    <div class="section-header" style="padding: 0 24px;">
+                        <h3>Live Fleet Map</h3>
+                        <div class="status-indicator"><span class="pulse-dot"></span> GPS Tracking Online</div>
+                    </div>
+                    <div id="fleet-map" style="flex: 1; border-radius: var(--radius-md); margin: 0 24px 24px 24px; border: var(--glass-border); z-index: 1;"></div>
+                </section>
+
+                <!-- VIEW: AI Insights -->
+                <section id="view-ai-insights" class="view-section">
+                    <div class="dashboard-grid">
+                        <div class="glass-panel span-3 ai-chat-interface">
+                            <div class="section-header">
+                                <h3>Chat with Sekretaris Owner (DeepSeek V4 Pro)</h3>
+                            </div>
+                            <div class="chat-history" id="opa-chat-history">
+                                <div class="chat-msg ai">
+                                    <div class="msg-avatar"><i class="ph-fill ph-robot"></i></div>
+                                    <div class="msg-bubble">Selamat datang, Bos. Ada yang bisa saya bantu terkait laporan hari ini?</div>
+                                </div>
+                            </div>
+                            <div class="chat-input-area">
+                                <input type="text" id="opa-input" placeholder="Tanya sesuatu tentang bisnis...">
+                                <button id="btn-ask-opa" class="btn-primary"><i class="ph ph-paper-plane-right"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-panel span-3">
+                            <div class="section-header">
+                                <h3>AI Learned Lessons (Evolutionary Learning)</h3>
+                            </div>
+                            <div class="lessons-list" id="lessons-container">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: Fleet Management -->
+                <section id="view-fleet" class="view-section">
+                    <div class="glass-panel" style="padding: 24px; margin: 0 24px;">
+                        <div class="section-header">
+                            <h3>Daftar Armada & Sopir</h3>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="fleet-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nopol</th>
+                                        <th>Tipe</th>
+                                        <th>Sopir</th>
+                                        <th>Kapasitas</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: Finance Ledger -->
+                <section id="view-finance" class="view-section">
+                    <div class="glass-panel" style="padding: 24px; margin: 0 24px;">
+                        <div class="section-header">
+                            <h3>Riwayat Pengiriman & Margin</h3>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="finance-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>ID Order</th>
+                                        <th>Pelanggan</th>
+                                        <th>Pendapatan</th>
+                                        <th>Biaya Langsung</th>
+                                        <th>Margin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: WA CS Chat Viewer -->
+                <section id="view-wa-cs" class="view-section">
+                    <div class="glass-panel" style="padding: 24px; margin: 0 24px; height: 80vh; display: flex; flex-direction: column;">
+                        <div class="section-header">
+                            <h3><i class="ph-fill ph-whatsapp-logo" style="color: #25D366; margin-right: 8px;"></i> WhatsApp CS Agent Viewer</h3>
+                            <div class="status-indicator"><span class="pulse-dot"></span> Listening</div>
+                        </div>
+                        <div class="chat-viewer" id="wa-chat-container" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 16px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/utils.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/charts.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

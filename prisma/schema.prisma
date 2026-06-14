@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Vehicle {
+  id               String   @id
+  plate_number     String   @unique
+  type             String
+  capacity_kg      Float
+  fuel_type        String
+  maintenance_cost Float
+  fuel_cost_per_km Float
+  drivers          Driver[]
+}
+
+model Driver {
+  id         String   @id
+  name       String
+  position   String
+  salary     Float
+  vehicle_id String?
+  vehicle    Vehicle? @relation(fields: [vehicle_id], references: [id])
+}
+
+model Customer {
+  id             String     @id
+  name           String
+  payment_terms  Int        // 14, 30, 45 days
+  total_trips    Int        @default(0)
+  shipments      Shipment[]
+}
+
+model Shipment {
+  id               String   @id
+  customer_id      String
+  customer         Customer @relation(fields: [customer_id], references: [id])
+  origin           String
+  destination      String
+  distance_km      Float
+  service_type     String
+  fuel_cost        Float    @default(0)
+  toll_parking     Float    @default(0)
+  handling_cost    Float    @default(0)
+  margin_pct       Float    @default(0)
+  status           String   @default("new") // new, in_transit, delivered
+  created_at       DateTime @default(now())
+}
+
+model TripEvent {
+  id           String   @id @default(uuid())
+  shipment_id  String
+  driver_id    String
+  event_type   String   // depart, arrive, issue
+  description  String?
+  delay_mins   Int      @default(0)
+  created_at   DateTime @default(now())
+}
+
+model DecisionLog {
+  id           String   @id @default(uuid())
+  context      String
+  candidates   String
+  final_choice String
+  reasoning    String
+  created_at   DateTime @default(now())
+}
+
+model OutcomeLog {
+  id               String   @id @default(uuid())
+  shipment_id      String
+  actual_duration  Int
+  actual_delay     Int
+  actual_fuel      Float
+  actual_toll      Float
+  issues           String?
+  created_at       DateTime @default(now())
+}
+
+model RouteMemory {
+  id               String   @id @default(uuid())
+  origin           String
+  destination      String
+  avg_duration_min Float
+  avg_cost         Float
+  toll_vs_nontoll  String
+  trip_count       Int      @default(0)
+}
+
+model PendingAdjustment {
+  id           String   @id @default(uuid())
+  shipment_id  String
+  reason       String
+  suggestion   String
+  status       String   @default("pending") // pending, approved, rejected
+  created_at   DateTime @default(now())
+}
+
+model AdminApproval {
+  id             String   @id @default(uuid())
+  adjustment_id  String
+  decision       String   // approved, rejected
+  reason         String?
+  created_at     DateTime @default(now())
+}
+
+model DailySummary {
+  id           String   @id @default(uuid())
+  date         DateTime @default(now())
+  summary_text String
+}
