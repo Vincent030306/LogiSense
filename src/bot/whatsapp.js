@@ -1,5 +1,6 @@
 import { makeWASocket, useMultiFileAuthState } from '@whiskeysockets/baileys';
 import pino from 'pino';
+import qrcode from 'qrcode-terminal';
 import { csAgent } from '../agents/cs-agent.js';
 
 export async function connectToWhatsApp() {
@@ -7,14 +8,19 @@ export async function connectToWhatsApp() {
   
   const sock = makeWASocket({
     auth: state,
-    printQRInTerminal: true,
     logger: pino({ level: 'silent' })
   });
 
   sock.ev.on('creds.update', saveCreds);
 
   sock.ev.on('connection.update', (update) => {
-    const { connection, lastDisconnect } = update;
+    const { connection, lastDisconnect, qr } = update;
+    
+    if (qr) {
+      console.log('✅ Silakan scan QR Code WhatsApp di bawah ini:');
+      qrcode.generate(qr, { small: true });
+    }
+
     if (connection === 'close') {
       const shouldReconnect = true;
       console.log('connection closed due to ', lastDisconnect.error, ', reconnecting ', shouldReconnect);
