@@ -9,13 +9,13 @@ const __dirname = path.dirname(__filename);
 
 async function main() {
   const filePath = 'C:\\Users\\HYPE AMD\\Documents\\antigravity\\LAPKEU.xlsx';
+  let workbook = null;
   if (!fs.existsSync(filePath)) {
-    console.error(`File ${filePath} not found!`);
-    return;
+    console.warn(`⚠️ File ${filePath} not found! Akan menggunakan data simulasi murni.`);
+  } else {
+    console.log('Loading Excel file...');
+    workbook = xlsx.readFile(filePath);
   }
-
-  console.log('Loading Excel file...');
-  const workbook = xlsx.readFile(filePath);
 
   // 1. Vehicles
   const vehicles = [
@@ -110,13 +110,16 @@ async function main() {
   // We'll mock a few shipments since parsing the raw Excel dynamically can be error-prone without knowing exact sheet structure.
   // But we'll try to read the first sheet if it exists
   try {
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const data = xlsx.utils.sheet_to_json(sheet);
+    if (workbook) {
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const data = xlsx.utils.sheet_to_json(sheet);
+      console.log(`Extracted ${data.length} rows from LAPKEU.xlsx. Seeding a sample of 10 shipments...`);
+    } else {
+      console.log(`Menggunakan data simulasi pengiriman (fallback)...`);
+    }
     
-    console.log(`Extracted ${data.length} rows from LAPKEU.xlsx. Seeding a sample of 10 shipments...`);
-    
-    // Fallback manual seed if the format is strange
+    // Fallback manual seed if the format is strange or file is missing
     const sampleShipments = [
       { cust: 'CUST-001', orig: 'Surabaya', dest: 'Malang', km: 90, type: 'Reguler Antar Kota', margin: 0.65 },
       { cust: 'CUST-002', orig: 'Surabaya', dest: 'Jakarta', km: 780, type: 'Same-day Jabodetabek', margin: 0.55 },
