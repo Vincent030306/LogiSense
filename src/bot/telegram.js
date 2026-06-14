@@ -45,6 +45,9 @@ if (bot) {
         console.error('Bot Error:', err);
         bot.sendMessage(chatId, 'Gagal mencatat laporan. Pastikan ID Shipment benar.');
       }
+    } else {
+      // Fallback for unhandled messages
+      bot.sendMessage(chatId, 'Maaf, saya hanya mengerti perintah laporan. Ketik /start untuk melihat panduan.');
     }
   });
 
