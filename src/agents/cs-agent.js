@@ -25,20 +25,38 @@ Gunakan bahasa Indonesia yang ramah, singkat, dan profesional.
 Jangan pernah memberikan informasi yang tidak ada di database.
 `;
 
+// In-memory chat history per customer (max 10 messages)
+const chatMemory = new Map();
+
 export class CSAgent {
   
   async handleCustomerMessage(customerName, customerId, message, contextData = {}) {
     try {
+      // Retrieve or initialize memory
+      let history = chatMemory.get(customerId) || [];
+      
+      // Add new user message to history
+      history.push({ role: 'user', content: `[${customerName}]: ${message}` });
+
+      // Keep only last 8 messages to prevent token overflow
+      if (history.length > 8) history = history.slice(history.length - 8);
+
       const response = await openai.chat.completions.create({
         model: 'minimax/minimax-m2.7',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'system', content: `Context Data Database saat ini: ${JSON.stringify(contextData)}` },
-          { role: 'user', content: `[${customerName}]: ${message}` }
+          ...history
         ]
       });
 
-      return response.choices[0].message.content;
+      const reply = response.choices[0].message.content;
+      
+      // Add assistant reply to history
+      history.push({ role: 'assistant', content: reply });
+      chatMemory.set(customerId, history);
+
+      return reply;
     } catch (err) {
       console.error('CS Agent Error:', err);
       // Return the actual error message to WA for easy debugging
